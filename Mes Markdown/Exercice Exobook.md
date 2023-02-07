@@ -165,10 +165,11 @@ db.employees.find().sort("salary")
  On va  devoir employé **find()**. On va devoir spécifier tout les paramètre de notre fonction **find(query, projection)** afin d'obtenir le résultat attendu.
  ```Javascript 
 //Donc afin de répondre à la demande la requête est : 
-db.employees.find({"_id": {$exists: true}},{"_id": 0, "name": 1, "job": 1})
-//Pour spécifier une projection le paramètre query se retrouve obligatoire.
+db.employees.find({}},{"_id": 0, "name": 1, "job": 1})
+
 //je vérifie simplement si le champs _id existe. 
-//Ensuite je viens spécifier ce qui doit être afficher sachant que on ne veut pas que l'id soit affiché on est obligé de le spécifier à 0 car il s'affiche automatiquement dans le cas contraire. 
+//Ensuite je viens spécifier ce qui doit être afficher l'identifiant étant par défaut à 1, on doit alors obligatoirement le modifier si on ne veut pas l'afficher;
+//Le reste des champs est mis par défaut à 0.
 
 
 //Résultat de notre requête : 
