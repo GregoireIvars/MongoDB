@@ -228,11 +228,11 @@ Lors de notre création de notre base de donnée accompagné de sa collection.
 On remarque que on créé aussi un document par la même occasion. 
 
 ```Javascript
-Insert un Document dans la Collection "uneCollection" : 
+//Insert un Document dans la Collection "uneCollection" : 
 
 db.uneCollection.insert({"uneCle": "uneValeur"})
 
-insersion d'une collection personnes possédant deux document distinct : 
+//insersion d'une collection personnes possédant deux document distinct : 
 
 db.personnes.insert([
 {"Nom": "leNom", "Prénom": "lePrénom"},
@@ -320,15 +320,11 @@ Pour ce faire une peut employer une command Find nous permettant de retourner le
 ```Javascript 
 db.collection.find({"age": {$eq: 76}})
 
-Retourne tout les document de notre collection possédant un age égale à 76
+//Retourne tout les document de notre collection possédant un age égale à 76
 ```
 
 D'autre opérateur sont à notre disposition : 
 
-$ne : different de ...
-$gt : superieur a ... 
-$gte : superieur ou egal ...
-$in et $nin : absence ou presence
 
 On peut egalement combiner  ces operateur pour effectuer des recherches sur des intervalles : 
 
@@ -362,3 +358,141 @@ Exemple d'agrégation :
    }
 ] )
 ```
+
+
+#### Opérateur : 
+
+ #### Liste d'opérateur possible 
+ 
+**$ne** : different de ...
+**$gt** : superieur a ... 
+**$gte** : superieur ou egal ...
+**$in et $nin** : absence ou presence
+
+**$expr** permet d'utiliser des expressions dans nos requêtes .  
+Ces expressions pourront contenir des operateurs, des objets ou encore des chemins d'objet pointant vers des champs
+
+```Javascript 
+
+db.personnes.find({
+	"nom": {$exists: 1},
+	"age": {$exists: 1},
+	$expr: {$gt: [{$multiply: [{$strLenCP: "$nom"}, 12] }, "$age"]}
+},{
+ "nom": 1,
+ "_id": 0
+})
+
+//le $ entre " " avec le nom d'un champs est un chemin vers ce dernier 
+//Comme un this.nomDuChamps
+```
+
+
+```Javascript
+db.banque.find(
+ {  "credit": {$exists: 1}, 
+	"debit": {$exists: 1},
+	$expr: {$gt: [{$sum: "$debit"}, "$credit"]}
+},{
+ "credit": 1,
+ "_id": 0,
+ "debit": 1
+})
+
+```
+
+L'operateur **$type**
+
+```Javascript 
+{champ: {$type: < type BSON >}}
+{champ: {$type: < type BSON >}}
+
+db.personnes.insertOne({
+	"nom": "Zidane", "prenom": "Z", "age": numberInt(50)
+})
+```
+
+L'operateur **$mod**
+
+```Javascript
+
+{champ: {$mod: [diviseur, reste]}}
+```
+
+L'operateur **$where** permet l'exécution direct du javascript sur la totalité des documents (Eviter l'utilisation)
+
+```javascript 
+
+db.personnes.find({$where: "this.nom.length > 6"})
+db.personnes.find({$where: function(){
+return obj.nom.length > 6
+}})
+//obj = this
+
+```
+
+
+Les operateur de **tableau** : 
+
+```Javascript 
+
+$field{$push: {champ: valeur, ...}} //ajoute des valeur dans notre tableau
+db.hobbies.updateOne({"_id": 1},{$push: {"passions": "Street figth"}})
+//Pour un update 1 document précis cibler sont id 
+db.hobbies.updateOne({"_id": 3},{$pull: {"passions": "parachute"}})
+```
+
+L'operateur **$addToSet**  permet d'éviter l'ajout de doublon 
+On peut le remplacer l'opérateur **$push** 
+
+```Javascript 
+db.personnes.find({"interets": "jardinage"}, {"_id": 1 , "nom": 1, "interets": 1 })
+
+//retourne tout les documents comportant une liste interets avec comme valeur 
+//bridge et jardinage 'l'ordre importe pas 
+db.personnes.find({"interets": {$all: ["bridge", "jardinage"]}})
+
+//Cible tout les document ayant une liste interets avec "jardinage" position 2
+db.personnes.find({"interets.1": "jardinage"})
+
+//retourne tout les document possédant le tableau intérant de taille 2
+db.personnes.find({"interets": {$size: 2}})
+
+```
+
+
+L'opérateur **$elemMatch**
+
+```Javascript 
+//retourne tout ceux  ayant une  note compris en 0 et 10 
+db.eleves.find({"notes": {$elemMatch: {$gt: 0 , $lt: 10}}})
+
+
+//retourne tout ceux qui ont eu 5 et 7,50 ($all s'effectue comme un 'et')
+db.eleves.find({"notes": {$all: [5, 7.50]}})
+
+
+```
+
+**Les tableaux  de documents** : 
+
+```Javascript 
+  db.eleves.find({"notes.note": 10})
+// renvoie l'éléves ayant eu un note égal à 10 
+
+db.eleves.find(
+{"notes": 
+ {$elemMatch: 
+   { "note": 
+     {$gt: 10, $lte: 15}
+    }
+  }
+})
+// ne prend pas les deux condition à la fois 
+db.eleves.find({"notes.note": {$gt: 10, $lte: 15}})
+
+
+```
+
+**Le tri** 
+curseur.sort(<tri>)
