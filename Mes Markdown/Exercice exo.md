@@ -733,12 +733,13 @@ db.salles.updateMany(
 
  ### Pour les salles dont le nom commence par une voyelle (peu importe la casse, là aussi), rajoutez dans le tableau avis un document composé du champ date valant la date courante et du champ note valant 10 (double ou entier). L’expression régulière pour chercher une chaîne de caractères débutant par une voyelle suivie de n’importe quoi d’autre est [^aeiou]+$.
 
+
   ### Réponse :
 ```Javascript 
 //Ma requete : 
 db.salles.updateMany(
 {
- "nom": {$regex: "[^aeiou]+$"}
+ "nom": {$regex: "^[aeiou]+$"}
 },{
 $addToSet: {"avis": [{"date": new Date(), "note": 10}]}
 })
