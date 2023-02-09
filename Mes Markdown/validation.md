@@ -1,14 +1,11 @@
-Exercice 1 
+## Exercice 1 
 
-Modifiez la collection salle afin que soient dorénavant validés les documents destinés à y être insérés ; cette validation aura lieu en mode « strict » et portera sur les champs suivants :
+*Modifiez la collection salle afin que soient dorénavant validés les documents destinés à y être insérés ; cette validation aura lieu en mode « strict » et portera sur les champs suivants :*
+*nom sera obligatoire et devra être de type chaîne de caractères.
+capacite sera obligatoire et devra être de type entier (int).*
+*Dans le champ adresse, les champs codePostal et ville, tous deux de type chaîne de caractères, seront obligatoires.*
 
-nom sera obligatoire et devra être de type chaîne de caractères.
-
-capacite sera obligatoire et devra être de type entier (int).
-
-Dans le champ adresse, les champs codePostal et ville, tous deux de type chaîne de caractères, seront obligatoires.
-
-### Validation : 
+ ### Réponse : 
 
 ```Javascript 
 db.runCommand(
@@ -57,7 +54,7 @@ db.salles.insertOne(
 ) 
 ```
 
-Exercice 2
+## Exercice 2
 
 Rajoutez à vos critères de validation existants un critère supplémentaire : le champ _id devra dorénavant être de type entier (int) ou ObjectId.
 
@@ -110,7 +107,7 @@ db.salles.updateMany({
 });
 ```
 
-Exercice 3
+## Exercice 3
 
 Rajoutez aux critères de validation existants le critère suivant :
 
