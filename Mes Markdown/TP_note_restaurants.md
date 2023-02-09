@@ -51,10 +51,10 @@ db.restaurant.createIndex( { localisation : "2dsphere" } )
 //L'opérateur $nearsphere ce base d'un point min et étend un cercle jusqu'a atteindre le point max. Venant retourner chaque restaurant présent dans ce cercle.
 //Le point de départ est déterminer par le document ayant  l'_id.
 //Ma requete : 
- var restau = db.restaurant.findOne({"_id": ObjectId('63e5127530ac02bdf30ec07d')});
+ var restau = db.restaurant.findOne({"localisation": {$exists: 1}});
  
  var requete = {
-   "localisation": {
+   localisation: {
      $nearSphere: {
        $geometry: {
         type : "Point",
@@ -72,7 +72,7 @@ b. Recherchez les restaurants qui se trouvent dans un certain rayon autour d'un 
 //La logique est présente dans la requete car théoriquement cette dernière répond à l'énoncé mais je ne comprend pas elle ne fonctionne pas 
 //Ma requete : 
 db.restaurant.find({
-   location: {
+   "localisation": {
       $nearSphere: {
          $geometry: {
             type: "Point",
@@ -133,3 +133,19 @@ db.restaurant.aggregate(pipeline)
 
 Export de la base de données:
 a. Exportez les résultats des requêtes dans un fichier CSV pour un usage ultérieur. Utilisez la commande mongoexport pour exporter des données de MongoDB.
+
+C'est deux requête permettent l'export des mes données de ma base de données
+```shell
+
+mongoexport --uri="mongodb://localhost:27017/restaurants"  --collection=restaurant  --out=restaurant.json
+mongoexport --uri="mongodb://localhost:27017/restaurants"  --collection=restaurant  --out=restaurant.csv 
+
+```
+
+
+Cette commande devrai pouvoir stocker le resultat de ma requete dans un csv mais cela ne fonctionne pas .
+```Shell
+mongoexport --uri="mongodb://localhost:27017/restaurants" --collection=restaurant --type=csv --fields restaurant_name, open_hours  --query="{"open_hours": {$eq: "18:00"}}" --out=restaurant.csv
+```
+
+

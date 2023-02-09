@@ -26,7 +26,6 @@ J'ai ensuite du ajouté un champ localisation me pouvant me permettre de gérer 
 Je me suis basé sur leur note afin de faire un semblant de trie pour répartir mes coordonnées par rapport à tout mes document.
 ```Javascript
 db.restaurant.updateMany({"avg_rating": {$lte: 2}},
-
 {$set: {"localisation": {"type": "Point", "coordinates": [45.285103,  6.877394]}}})
 
 db.restaurant.updateMany({"avg_rating": {$gt: 4}},
